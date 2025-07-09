@@ -21,17 +21,6 @@ async def on_ready():
     print(f"🟢 {bot.user.name} has connected to Discord!")
 
 class_specs_by_role = {
-    "dps": [
-        "Mage - Fire 🔥", "Mage - Frost ❄️", "Mage - Arcane 🌀",
-        "Hunter - Beast Mastery 🐺", "Hunter - Marksmanship 🎯", "Hunter - Survival 🏹",
-        "Warlock - Affliction 🕷️", "Warlock - Demonology 👹", "Warlock - Destruction 🔥",
-        "Rogue - Assassination 🗡️", "Rogue - Combat 💥", "Rogue - Subtlety 🎭",
-        "Priest - Shadow 🌑", "Monk - Windwalker 🐉",
-        "Druid - Balance 🌙", "Druid - Feral 🐾",
-        "Warrior - Arms 💪", "Warrior - Fury 🔥",
-        "Death Knight - Frost ❄️", "Death Knight - Unholy ☠️",
-        "Paladin - Retribution ⚔️", "Shaman - Elemental ⚡", "Shaman - Enhancement 🔨"
-    ],
     "ranged": [
         "Mage - Fire 🔥", "Mage - Frost ❄️", "Mage - Arcane 🌀",
         "Hunter - Beast Mastery 🐺", "Hunter - Marksmanship 🎯", "Hunter - Survival 🏹",
@@ -70,13 +59,18 @@ async def chooseclass(ctx, role: str = None):
         options = class_specs_by_role[role]
         chosen = random.choice(options)
         await ctx.send(f"Your chosen {role} spec is: **{chosen}**")
+    elif role == "dps":
+        # Combine ranged and melee for DPS
+        dps_specs = class_specs_by_role["ranged"] + class_specs_by_role["melee"]
+        chosen = random.choice(dps_specs)
+        await ctx.send(f"Your chosen DPS spec is: **{chosen}**")
     elif role == "all":
-        # Flatten all lists into one master list
+        # Flatten all lists into one master list (no duplicates now!)
         all_specs = [spec for specs in class_specs_by_role.values() for spec in specs]
         chosen = random.choice(all_specs)
         await ctx.send(f"Your randomly chosen spec is: **{chosen}**")
     else:
-        valid_roles = ", ".join(class_specs_by_role.keys()) + ", all"
+        valid_roles = ", ".join(class_specs_by_role.keys()) + ", dps, all"
         await ctx.send(f"Invalid role. Try one of: {valid_roles}")
 
 @bot.command()
